@@ -34,6 +34,7 @@ else:
     import configparser
 
 from PIL import Image, ImageTk
+import functools
 import time
 from datetime import datetime
 
@@ -51,7 +52,7 @@ gi.require_version('GdkX11', '3.0')
 from gi.repository import Gst, GObject, GdkX11, GstVideo
 
 
-BASE_PIC_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/pics/'
+BASE_PIC_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/pics/test/'
 IMAGES = os.path.join(BASE_PIC_PATH, '*.jpg')
 
 BASE_VID_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/video/'
@@ -235,17 +236,15 @@ class TVbox():
         self.len_img_list = len(list_of_files)
         
         if self.most_recent_mode():
-            print (self.most_recent_mode)
             self.list_of_img = list_of_files[:MAX_JPG]
         elif (RANDOMIZE_PHOTOS == True):
-            print (RANDOMIZE_PHOTOS)
             import random
             from random import shuffle
             self.list_of_img = list_of_files
             shuffle(self.list_of_img)
         else:
             self.list_of_img = list_of_files
-        print (self.list_of_img)
+        #print (self.list_of_img)
 
     def listvideos(self):
         """
@@ -347,7 +346,9 @@ class TVbox():
                 self.img_day = ''
 
     def showPIL(self, image_file):
-        pilImage = Image.open(image_file)
+        Pic = Image.open(image_file)
+        pilImage = self.image_transpose_exif(Pic)
+        pilImage.save(os.path.join(BASE_PIC_PATH,"transformed.jpg"))
         imgWidth, imgHeight = pilImage.size
         print ('SHOWING', image_file, imgWidth, imgHeight, self.w, self.h-self.h_label)
         # too large or too small, scale to fit the frame
@@ -359,6 +360,40 @@ class TVbox():
         imagesprite = self.canvas.create_image(self.w/2, 
                                                (self.h-self.h_label)/2, 
                                                image=self.image)
+
+    def image_transpose_exif(self, im):
+        """
+            Apply Image.transpose to ensure 0th row of pixels is at the visual
+            top of the image, and 0th column is the visual left-hand side.
+            Return the original image if unable to determine the orientation.
+
+            As per CIPA DC-008-2012, the orientation field contains an integer,
+            1 through 8. Other values are reserved.
+
+            Thanks to Roman Odaisky and others:
+            https://stackoverflow.com/questions/4228530/pil-thumbnail-is-rotating-my-image/
+        """
+        exif_orientation_tag = 0x0112
+        exif_transpose_sequences = [                   # Val  0th row  0th col
+            [],                                        #  0    (reserved)
+            [],                                        #  1   top      left
+            [Image.FLIP_LEFT_RIGHT],                   #  2   top      right
+            [Image.ROTATE_180],                        #  3   bottom   right
+            [Image.FLIP_TOP_BOTTOM],                   #  4   bottom   left
+            [Image.FLIP_LEFT_RIGHT, Image.ROTATE_90],  #  5   left     top
+            [Image.ROTATE_270],                        #  6   right    top
+            [Image.FLIP_TOP_BOTTOM, Image.ROTATE_90],  #  7   right    bottom
+            [Image.ROTATE_90],                         #  8   left     bottom
+        ]
+
+        try:
+            seq = exif_transpose_sequences[im._getexif()[exif_orientation_tag]]
+        except Exception:
+            return im
+        else:
+            print("Succesfully read exif data")
+            return functools.reduce(type(im).transpose, seq, im)
+
 
     def showvideo(self):
         if self.currentvideo != self.showvideonr:
