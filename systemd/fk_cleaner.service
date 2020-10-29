@@ -1,0 +1,13 @@
+[Unit]
+ Description=Family Kiosk Cleaner script
+ After=multi-user.target
+
+[Service]
+ Type=idle
+ Environment="DISPLAY=:0"
+ Environment="XAUTHORITY=/home/pi/.Xauthority"
+ ExecStart=/usr/bin/python3 /home/pi/familiekiosk/src/FK_Cleaner.py > /home/pi/familiekiosk/output_FKCleaner.log 2>&1
+
+[Install]
+ WantedBy=multi-user.target
+ WantedBy=graphical.target
