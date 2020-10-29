@@ -86,6 +86,7 @@ def FK_cleaner(path, allowed_formats, remove = False, debug = False):
 import os
 import sys
 import glob
+import time
 
 
 if sys.version_info[0] != 3:
@@ -119,7 +120,11 @@ if len(sys.argv) > 2:
 elif len(sys.argv) - 1 == 0:  # No more arguments -> run this shit
     BASE_PIC_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/pics/'
     if debug == True: print("Start cleaning folder {} with debuging {}".format(BASE_PIC_PATH, debug))
-    FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "JPG", "cfg"], remove = remove, debug=debug)
+    while 1 < 2:
+        FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "JPG", "cfg"], remove = remove, debug=debug)
+        print("Job done, waiting 5 minutes")
+        time.sleep(300) # wait 5 minutes
+		
 
 elif sys.argv[1] == "--help":
     print(arguments_message)
