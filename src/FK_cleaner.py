@@ -42,6 +42,9 @@ def FK_cleaner(path, allowed_formats, remove = False, debug = False):
         if remove == True and size == 0:
             os.remove(file)
             print("FK_cleaner: removed zero-file {} ".format(file))
+        elif size == 0:
+            print("FK_cleaner: Found zero-file {}".format(file))
+		
 
         return()
 
@@ -57,6 +60,8 @@ def FK_cleaner(path, allowed_formats, remove = False, debug = False):
             if remove == True:
                 os.remove(file)
                 print("FK_cleaner: removed wrong file {}".format(file))
+            else:
+                print("FK_cleaner: found wrong file {}".format(file))			
 
 
 
