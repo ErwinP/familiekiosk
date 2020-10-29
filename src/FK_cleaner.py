@@ -114,7 +114,7 @@ if len(sys.argv) > 2:
 elif len(sys.argv) - 1 == 0:  # No more arguments -> run this shit
     BASE_PIC_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/pics/'
     if debug == True: print("Start cleaning folder {} with debuging {}".format(BASE_PIC_PATH, debug))
-    FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "metafile"], remove = remove, debug=debug)
+    FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "JPG", "cfg"], remove = remove, debug=debug)
 
 elif sys.argv[1] == "--help":
     print(arguments_message)
