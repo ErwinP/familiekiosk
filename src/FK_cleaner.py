@@ -7,6 +7,8 @@ Usage:
     FK_cleaner.py [--debug] [--help]
 
        no arguments:     No output
+	   
+	   --delete: 		Allow removal of files (default is that it only detects files, but does not delete it)
 
        --debug:          Enable more verbose output
        --help:           Show some explanation about this program.
@@ -96,6 +98,14 @@ if "--debug" in sys.argv:
 else:
     debug = False
 
+if "--delete" in sys.argv:
+    print("\nDelete mode is on")
+    remove = True
+    sys.argv.remove("--delete")
+else:
+    remove = False
+	
+
 if len(sys.argv) > 2:
     print("Too many arguments!")
     print(arguments_message)
@@ -104,7 +114,7 @@ if len(sys.argv) > 2:
 elif len(sys.argv) - 1 == 0:  # No more arguments -> run this shit
     BASE_PIC_PATH = os.path.abspath(os.path.dirname(sys.argv[0])) + '/pics/'
     if debug == True: print("Start cleaning folder {} with debuging {}".format(BASE_PIC_PATH, debug))
-    FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "metafile"], remove = True, debug=debug)
+    FK_cleaner(BASE_PIC_PATH, allowed_formats = ["jpg", "metafile"], remove = remove, debug=debug)
 
 elif sys.argv[1] == "--help":
     print(arguments_message)
