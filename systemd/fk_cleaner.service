@@ -6,7 +6,7 @@
  Type=idle
  Environment="DISPLAY=:0"
  Environment="XAUTHORITY=/home/pi/.Xauthority"
- ExecStart=/usr/bin/python3 /home/pi/familiekiosk/src/FK_Cleaner.py --delete > /home/pi/familiekiosk/output_FKCleaner.log 2>&1
+ ExecStart=/usr/bin/python3 /home/pi/Projects/familiekiosk/src/FK_Cleaner.py --delete
 
 [Install]
  WantedBy=multi-user.target
